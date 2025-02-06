@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 extension URLRequest {
     mutating func setValueIfNotSet(_ value: String, forHTTPHeaderField field: String) {

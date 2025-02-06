@@ -6,6 +6,9 @@
 //
 
 public import Foundation
+#if canImport(FoundationNetworking)
+public import FoundationNetworking
+#endif
 public import SwiftSoup
 
 /// A metadata processor that tries to extract data from HTML outside of

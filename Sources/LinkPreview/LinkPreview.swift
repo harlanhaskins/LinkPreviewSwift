@@ -1,4 +1,7 @@
 public import Foundation
+#if canImport(FoundationNetworking)
+public import FoundationNetworking
+#endif
 import SwiftSoup
 
 public enum LinkPreviewError: Error {

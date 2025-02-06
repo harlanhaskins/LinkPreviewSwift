@@ -6,6 +6,9 @@
 //
 
 public import Foundation
+#if canImport(FoundationNetworking)
+public import FoundationNetworking
+#endif
 import SwiftSoup
 
 /// Loads and extracts metadata from web URLs.

@@ -5,8 +5,11 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
-public import SwiftSoup
 public import Foundation
+#if canImport(FoundationNetworking)
+public import FoundationNetworking
+#endif
+public import SwiftSoup
 
 /// A Wikipedia-specific processor that hits the Wikipedia API in order to
 /// extract text from the articles.

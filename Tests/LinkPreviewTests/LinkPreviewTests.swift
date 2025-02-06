@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+public import FoundationNetworking
+#endif
 import LinkPreview
 import SwiftSoup
 import Testing
