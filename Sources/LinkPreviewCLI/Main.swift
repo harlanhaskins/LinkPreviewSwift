@@ -18,13 +18,11 @@ struct LinkPreviewCLI: AsyncParsableCommand {
     var url: String
 
     mutating func run() async throws {
-        guard var components = URLComponents(string: url) else {
-            throw Error.invalidURL
+        var urlString = url
+        if !urlString.hasPrefix("http") {
+            urlString = "https://\(urlString)"
         }
-        if components.scheme == nil {
-            components.scheme = "https"
-        }
-        guard let url = components.url else {
+        guard let url = URL(string: urlString) else {
             throw Error.invalidURL
         }
 
