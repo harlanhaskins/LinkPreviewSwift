@@ -8,6 +8,7 @@
 public import Foundation
 import SwiftSoup
 
+/// Loads and extracts metadata from web URLs.
 public final class LinkPreviewProvider {
     static let defaultProcessors: [any MetadataProcessor.Type] = [
         OpenGraphProcessor.self,
@@ -34,10 +35,6 @@ public final class LinkPreviewProvider {
             return
         }
         registeredProcessors.remove(at: index)
-    }
-
-    public func unregisterAllProcessors() {
-        registeredProcessors = []
     }
 
     public func load(with request: URLRequest) async throws -> LinkPreview {

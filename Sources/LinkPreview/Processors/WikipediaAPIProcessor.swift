@@ -8,6 +8,8 @@
 public import SwiftSoup
 public import Foundation
 
+/// A Wikipedia-specific processor that hits the Wikipedia API in order to
+/// extract text from the articles.
 public enum WikipediaAPIProcessor: MetadataProcessor {
     public static func applies(to url: URL) -> Bool {
         guard let host = url.host else {

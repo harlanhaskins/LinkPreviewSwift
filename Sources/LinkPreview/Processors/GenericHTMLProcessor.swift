@@ -8,6 +8,8 @@
 public import Foundation
 public import SwiftSoup
 
+/// A metadata processor that tries to extract data from HTML outside of
+/// OpenGraph, either by looking for `<title>` tags, `<meta name="description">` tags, `<link rel="icon">` tags, etc.
 public enum GenericHTMLProcessor: MetadataProcessor {
     public static func applies(to url: URL) -> Bool {
         true

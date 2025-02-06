@@ -7,14 +7,6 @@ public enum LinkPreviewError: Error {
     case unableToParseResponse(Error)
 }
 
-@propertyWrapper
-public struct UncheckedSendable<Value>: @unchecked Sendable {
-    public var wrappedValue: Value
-    public init(wrappedValue: Value) {
-        self.wrappedValue = wrappedValue
-    }
-}
-
 public struct LinkPreview: CustomDebugStringConvertible, Sendable {
     public let url: URL
     public internal(set) var properties: [String: LinkPreviewProperty]
@@ -118,13 +110,5 @@ public struct LinkPreview: CustomDebugStringConvertible, Sendable {
             }
         }
         return description
-    }
-}
-
-extension URLRequest {
-    mutating func setValueIfNotSet(_ value: String, forHTTPHeaderField field: String) {
-        if self.value(forHTTPHeaderField: field) == nil {
-            setValue(value, forHTTPHeaderField: field)
-        }
     }
 }
