@@ -17,7 +17,8 @@ public enum OpenGraphProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession
+        in session: URLSession,
+        options: MetadataProcessingOptions
     ) async {
         let metaTags = try? document.select("meta[property]")
         for metaTag in metaTags?.array() ?? [] {

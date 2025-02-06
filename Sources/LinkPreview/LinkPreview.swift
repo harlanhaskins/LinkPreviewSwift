@@ -94,19 +94,21 @@ public struct LinkPreview: CustomDebugStringConvertible, Sendable {
     public var debugDescription: String {
         var description = ""
         let propertyNames = properties.keys.sorted()
-        for (offset, key) in propertyNames.enumerated() {
+        var numberPrinted = 0
+        for key in propertyNames {
             let property = properties[key]!
-            if offset != 0 {
+            guard let content = property.content else {
+                continue
+            }
+            if numberPrinted != 0 {
                 description += "\n"
             }
-            description += "\(property.name)"
-            if let content = property.content {
-                description += ": "
-                if property.name == "description" && content.count > 200 {
-                    description += "\"\(content.prefix(200))\" [truncated]"
-                } else {
-                    description += "\"\(content)\""
-                }
+            numberPrinted += 1
+            description += "\(property.name): "
+            if property.name == "description" && content.count > 200 {
+                description += "\"\(content.prefix(200))\" [truncated]"
+            } else {
+                description += "\"\(content)\""
             }
             if !property.metadata.isEmpty {
                 let keys = property.metadata.keys.sorted()

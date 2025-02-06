@@ -17,6 +17,7 @@ public actor LinkPreviewProvider {
     public static let shared = LinkPreviewProvider()
     let urlSession: URLSession
     var registeredProcessors: [any MetadataProcessor.Type] = LinkPreviewProvider.defaultProcessors
+    public var options: MetadataProcessingOptions = .init()
 
     public init(urlSession: URLSession = .shared) {
         self.urlSession = urlSession
@@ -58,15 +59,17 @@ public actor LinkPreviewProvider {
     public func load(html: String, url: URL) async throws -> LinkPreview {
         var preview = LinkPreview(url: url)
         let document = try SwiftSoup.parse(html, url.absoluteString)
-        for Processor in registeredProcessors {
-            guard Processor.applies(to: url) else {
+        for processor in registeredProcessors {
+            guard processor.applies(to: url) else {
                 continue
             }
-            await Processor.updateLinkPreview(
+            await processor.updateLinkPreview(
                 &preview,
                 for: url,
                 document: document,
-                in: urlSession)
+                in: urlSession,
+                options: options
+            )
         }
         return preview
     }

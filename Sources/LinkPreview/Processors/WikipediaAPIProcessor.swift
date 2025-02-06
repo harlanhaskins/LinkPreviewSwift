@@ -20,8 +20,14 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession
+        in session: URLSession,
+        options: MetadataProcessingOptions
     ) async {
+        // Skip if the client requested no new requests.
+        if !options.allowAdditionalRequests {
+            return
+        }
+
         // No need to fetch a new description if there's one there.
         if preview.description != nil {
             return

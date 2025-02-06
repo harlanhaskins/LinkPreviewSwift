@@ -60,11 +60,38 @@ public enum GenericHTMLProcessor: MetadataProcessor {
         try? document.select("title").text()
     }
 
+    private static func defaultFaviconIfExists(
+        for url: URL,
+        in session: URLSession
+    ) async -> URL? {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.path = "/favicon.ico"
+        guard let url = components.url else {
+            return nil
+        }
+        do {
+            let (_, response) = try await session.data(from: url)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return nil
+            }
+            guard (200..<299).contains(httpResponse.statusCode) else {
+                return nil
+            }
+        } catch {
+            return nil
+        }
+
+        return url
+    }
+
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession
+        in session: URLSession,
+        options: MetadataProcessingOptions
     ) async {
         if preview.canonicalURL == nil {
             preview.canonicalURL = findCanonicalURL(in: document)
@@ -80,6 +107,10 @@ public enum GenericHTMLProcessor: MetadataProcessor {
 
         if preview.faviconURL == nil {
             preview.faviconURL = findFaviconURL(in: document)
+        }
+
+        if preview.faviconURL == nil && options.allowAdditionalRequests {
+            preview.faviconURL = await defaultFaviconIfExists(for: url, in: session)
         }
     }
 }
