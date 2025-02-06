@@ -76,13 +76,15 @@ enum CustomProcessor: MetadataProcessor {
         options: MetadataProcessingOptions
     ) async {
         let title = preview.title ?? ""
-        if !title.isEmpty {
-            title += " • "
-        }
         if let host = url.host {
+            if !title.isEmpty {
+                title += " • "
+            }
             title += host
         }
-        preview.title = title
+        if !title.isEmpty {
+            preview.title = title
+        }
     }
 }
 

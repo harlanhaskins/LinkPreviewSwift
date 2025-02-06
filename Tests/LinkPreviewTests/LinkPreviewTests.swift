@@ -83,13 +83,15 @@ struct LinkPreviewTests {
                 options: MetadataProcessingOptions
             ) async {
                 var title = preview.title ?? ""
-                if !title.isEmpty {
-                    title += " • "
-                }
                 if let host = url.host {
+                    if !title.isEmpty {
+                        title += " • "
+                    }
                     title += host
                 }
-                preview.title = title
+                if !title.isEmpty {
+                    preview.title = title
+                }
             }
         }
 
@@ -97,10 +99,10 @@ struct LinkPreviewTests {
         provider.registerProcessor(CustomProcessor.self)
         let preview = try await provider.load(html: """
             <head>
-            <title>Title</title>
+            <title>Example Domain</title>
             </head>
             """, url: URL(string: "https://example.com")!
         )
-        #expect(preview.title == "Title • example.com")
+        #expect(preview.title == "Example Domain • example.com")
     }
 }
