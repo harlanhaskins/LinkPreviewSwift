@@ -31,7 +31,7 @@ let preview = try await provider.load(html: html, url: URL(string: "example.com"
 
 The `LinkPreview` type has several accessors for common OpenGraph metadata:
 
-```
+```swift
 let imageURL = preview.imageURL
 let title = preview.title
 let description = preview.description
@@ -39,7 +39,7 @@ let description = preview.description
 
 But you can also read custom OpenGraph fields directly from the properties:
 
-```
+```swift
 // Parses `og:image`, `og:image:width`, and `og:image:height` tags.
 let imageURLProperty = preview.property(named: "image")
 let imageURL = imageURLProperty.content
