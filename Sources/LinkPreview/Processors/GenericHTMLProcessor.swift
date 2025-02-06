@@ -58,6 +58,7 @@ public enum GenericHTMLProcessor: MetadataProcessor {
                 return try? metaTag.attr("content")
             }
         }
+
         return nil
     }
 

@@ -65,9 +65,8 @@ struct LinkPreviewTests {
         let url = URL(string: "https://en.wikipedia.org/wiki/Italian_language")!
         let preview = try await provider.load(from: url)
 
-        // Since we're not fetching additional data from the Wikipedia API
-        // we won't have a description.
-        #expect(preview.description == nil)
+        // We'll use the short description here
+        #expect(preview.description == "Romance language")
     }
 
     @Test func customProcessor() async throws {

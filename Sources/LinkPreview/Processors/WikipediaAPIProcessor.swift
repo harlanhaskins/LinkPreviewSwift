@@ -28,13 +28,19 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
         in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
-        // Skip if the client requested no new requests.
-        if !options.allowAdditionalRequests {
+        // No need to fetch a new description if there's one there.
+        if preview.description != nil {
             return
         }
 
-        // No need to fetch a new description if there's one there.
-        if preview.description != nil {
+        if let shortDescription = try? document.select("div.shortdescription"),
+           let text = try? shortDescription.text(), !text.isEmpty {
+            preview.description = text
+            return
+        }
+
+        // Skip if the client requested no new requests.
+        if !options.allowAdditionalRequests {
             return
         }
 
