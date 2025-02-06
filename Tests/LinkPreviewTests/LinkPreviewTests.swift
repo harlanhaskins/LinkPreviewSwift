@@ -82,7 +82,14 @@ struct LinkPreviewTests {
                 in session: URLSession,
                 options: MetadataProcessingOptions
             ) async {
-                preview.title = "No way José"
+                var title = preview.title ?? ""
+                if !title.isEmpty {
+                    title += " • "
+                }
+                if let host = url.host {
+                    title += host
+                }
+                preview.title = title
             }
         }
 
@@ -92,8 +99,8 @@ struct LinkPreviewTests {
             <head>
             <title>Title</title>
             </head>
-            """, url: URL(string: "example.com")!
+            """, url: URL(string: "https://example.com")!
         )
-        #expect(preview.title == "No way José")
+        #expect(preview.title == "Title • example.com")
     }
 }

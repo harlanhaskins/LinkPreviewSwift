@@ -50,6 +50,50 @@ if let width = imageURLProperty.metadata["width"],
 }
 ```
 
+### Custom Processors
+
+By default all the extraction is performed by `MetadataProcessor` objects. There
+are currently three, `OpenGraphProcessor`, `GenericHTMLProcessor`, and
+`WikipediaAPIProcessor`, the latter of which is specific to `wikipedia.org` URLs.
+
+You can implement your own processor to recognize special pages and perform more
+specific scraping tasks; you will be handed a `Document` from [SwiftSoup](https://github.com/scinfu/SwiftSoup)
+that you can extract data from.
+
+For example, you can add a processor that adds the URL to the end of the title like so:
+
+```swift
+enum CustomProcessor: MetadataProcessor {
+    static func applies(to url: URL) -> Bool {
+        true
+    }
+
+    static func updateLinkPreview(
+        _ preview: inout LinkPreview,
+        for url: URL,
+        document: Document,
+        in session: URLSession,
+        options: MetadataProcessingOptions
+    ) async {
+        let title = preview.title ?? ""
+        if !title.isEmpty {
+            title += " • "
+        }
+        if let host = url.host {
+            title += host
+        }
+        preview.title = title
+    }
+}
+
+// Tell the provider to run this processor along with the others.
+provider.registerProcessor(CustomProcessor.self)
+
+let preview = try await provider.load(from: URL(string: "https://example.com")!)
+
+print(preview.title) // prints 'Example Domain • example.com'
+```
+
 ## Installation
 
 LinkPreviewSwift can be added to your project using Swift Package Manager. For more
