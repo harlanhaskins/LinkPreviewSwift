@@ -7,6 +7,7 @@
 
 import Foundation
 import LinkPreview
+import SwiftSoup
 import Testing
 
 @Suite
@@ -53,5 +54,44 @@ struct LinkPreviewTests {
         let url = URL(string: "https://en.wikipedia.org/wiki/Italian_language")!
         let preview = try await provider.load(from: url)
         #expect(preview.description != nil)
+    }
+
+    @Test func wikipediaNoAdditionalRequests() async throws {
+        let provider = LinkPreviewProvider()
+        provider.options.allowAdditionalRequests = false
+        let url = URL(string: "https://en.wikipedia.org/wiki/Italian_language")!
+        let preview = try await provider.load(from: url)
+
+        // Since we're not fetching additional data from the Wikipedia API
+        // we won't have a description.
+        #expect(preview.description == nil)
+    }
+
+    @Test func customProcessor() async throws {
+        enum CustomProcessor: MetadataProcessor {
+            static func applies(to url: URL) -> Bool {
+                true
+            }
+
+            static func updateLinkPreview(
+                _ preview: inout LinkPreview,
+                for url: URL,
+                document: Document,
+                in session: URLSession,
+                options: MetadataProcessingOptions
+            ) async {
+                preview.title = "No way José"
+            }
+        }
+
+        let provider = LinkPreviewProvider()
+        provider.registerProcessor(CustomProcessor.self)
+        let preview = try await provider.load(html: """
+            <head>
+            <title>Title</title>
+            </head>
+            """, url: URL(string: "example.com")!
+        )
+        #expect(preview.title == "No way José")
     }
 }

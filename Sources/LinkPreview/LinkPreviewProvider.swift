@@ -8,13 +8,12 @@
 public import Foundation
 import SwiftSoup
 
-public actor LinkPreviewProvider {
+public final class LinkPreviewProvider {
     static let defaultProcessors: [any MetadataProcessor.Type] = [
         OpenGraphProcessor.self,
         GenericHTMLProcessor.self,
         WikipediaAPIProcessor.self
     ]
-    public static let shared = LinkPreviewProvider()
     let urlSession: URLSession
     var registeredProcessors: [any MetadataProcessor.Type] = LinkPreviewProvider.defaultProcessors
     public var options: MetadataProcessingOptions = .init()

@@ -35,14 +35,12 @@ public struct LinkPreviewProperty: Sendable {
     public var metadata: [String: String] = [:]
 
     mutating func merge(with property: LinkPreviewProperty) {
-        if content == nil {
-            content = property.content
+        if let content = property.content {
+            self.content = content
         }
 
         for (key, value) in property.metadata {
-            if metadata[key] == nil {
-                metadata[key] = value
-            }
+            metadata[key] = value
         }
     }
 }

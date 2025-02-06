@@ -10,6 +10,7 @@ public import SwiftSoup
 
 public struct MetadataProcessingOptions: Sendable {
     public var allowAdditionalRequests: Bool = true
+    public init() {}
 }
 
 public protocol MetadataProcessor {
