@@ -14,10 +14,6 @@ public import SwiftSoup
 /// A metadata processor that tries to extract data from HTML outside of
 /// OpenGraph, either by looking for `<title>` tags, `<meta name="description">` tags, `<link rel="icon">` tags, etc.
 public enum GenericHTMLProcessor: MetadataProcessor {
-    public static func applies(to url: URL) -> Bool {
-        true
-    }
-
     static let faviconProperties = ["icon", "shortcut icon", "apple-touch-icon", "apple-touch-icon-precomposed"]
 
     static func findFaviconURL(in document: Document) -> URL? {

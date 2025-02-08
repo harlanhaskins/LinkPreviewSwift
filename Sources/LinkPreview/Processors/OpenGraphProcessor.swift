@@ -12,10 +12,6 @@ public import FoundationNetworking
 public import SwiftSoup
 
 public enum OpenGraphProcessor: MetadataProcessor {
-    public static func applies(to url: URL) -> Bool {
-        true
-    }
-
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,

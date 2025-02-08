@@ -14,13 +14,6 @@ public import SwiftSoup
 /// A Wikipedia-specific processor that hits the Wikipedia API in order to
 /// extract text from the articles.
 public enum WikipediaAPIProcessor: MetadataProcessor {
-    public static func applies(to url: URL) -> Bool {
-        guard let host = url.host else {
-            return false
-        }
-        return host.hasSuffix("wikipedia.org")
-    }
-
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
@@ -28,6 +21,11 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
         in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
+        // Only apply this to Wikipedia.org URLs
+        guard url.baseHostName == "wikipedia.org" else {
+            return
+        }
+
         // No need to fetch a new description if there's one there.
         if preview.description != nil {
             return

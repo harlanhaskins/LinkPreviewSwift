@@ -59,9 +59,6 @@ public final class LinkPreviewProvider {
         var preview = LinkPreview(url: url)
         let document = try SwiftSoup.parse(html, url.absoluteString)
         for processor in registeredProcessors {
-            guard processor.applies(to: url) else {
-                continue
-            }
             await processor.updateLinkPreview(
                 &preview,
                 for: url,

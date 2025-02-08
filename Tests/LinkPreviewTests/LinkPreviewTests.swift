@@ -71,10 +71,6 @@ struct LinkPreviewTests {
 
     @Test func customProcessor() async throws {
         enum CustomProcessor: MetadataProcessor {
-            static func applies(to url: URL) -> Bool {
-                true
-            }
-
             static func updateLinkPreview(
                 _ preview: inout LinkPreview,
                 for url: URL,

@@ -17,7 +17,6 @@ public struct MetadataProcessingOptions: Sendable {
 }
 
 public protocol MetadataProcessor {
-    static func applies(to url: URL) -> Bool
     static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,

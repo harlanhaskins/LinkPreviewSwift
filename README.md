@@ -64,10 +64,6 @@ For example, you can add a processor that adds the URL to the end of the title l
 
 ```swift
 enum CustomProcessor: MetadataProcessor {
-    static func applies(to url: URL) -> Bool {
-        true
-    }
-
     static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
