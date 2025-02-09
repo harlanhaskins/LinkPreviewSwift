@@ -12,9 +12,12 @@ public enum OpenGraphProcessor: MetadataProcessor {
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
-        document: Document,
+        document: Document?,
         options: MetadataProcessingOptions
     ) async {
+        guard let document else {
+            return
+        }
         let metaTags = try? document.select("meta[property]")
         for metaTag in metaTags?.array() ?? [] {
             guard var property = try? metaTag.attr("property") else {

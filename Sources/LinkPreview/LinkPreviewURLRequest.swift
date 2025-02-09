@@ -9,13 +9,15 @@ import Foundation
 import AsyncHTTPClient
 
 struct LinkPreviewURLRequest {
-    var request: HTTPClientRequest
-
-    var url: URL? {
-        URL(string: request.url)
+    enum Output {
+        case html(Data)
+        case fileURL(URL, String)
     }
+    var request: HTTPClientRequest
+    let url: URL
 
     init(url: URL) {
+        self.url = url
         self.request = .init(url: url.absoluteString)
     }
 
@@ -25,21 +27,25 @@ struct LinkPreviewURLRequest {
         }
     }
 
-    func load() async throws -> Data {
+    func load() async throws -> Output {
         let response = try await HTTPClient.shared.execute(request, timeout: .seconds(5))
-        if response.status == .ok {
-            let contentType = response.headers["Content-Type"]
-            let isHTML = contentType.contains { $0.localizedCaseInsensitiveContains("text/html")
-            }
-            guard isHTML else {
-                let contentTypeString = contentType.joined(separator: ", ")
-                throw LinkPreviewError.unableToHandleContentType(contentTypeString, response)
-            }
-            let body = try await response.body.collect(upTo: 1024 * 1024) // 1 MB
-            return Data(body.readableBytesView)
-        } else {
-            // handle remote error
+        guard response.status == .ok else {
             throw LinkPreviewError.unsuccessfulHTTPStatus(Int(response.status.code), response)
         }
+
+        let contentTypes = response.headers["Content-Type"]
+        for contentType in contentTypes {
+            let isHTML = contentType.localizedCaseInsensitiveContains("text/html")
+
+            if isHTML {
+                let body = try await response.body.collect(upTo: 1024 * 1024) // 1 MB
+                return .html(Data(body.readableBytesView))
+            }
+
+            return .fileURL(url, contentType)
+        }
+
+        let contentTypeString = contentTypes.joined(separator: ", ")
+        throw LinkPreviewError.unableToHandleContentType(contentTypeString, response)
     }
 }

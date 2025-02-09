@@ -17,7 +17,7 @@ public protocol MetadataProcessor {
     static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
-        document: Document,
+        document: Document?,
         options: MetadataProcessingOptions
     ) async
 }

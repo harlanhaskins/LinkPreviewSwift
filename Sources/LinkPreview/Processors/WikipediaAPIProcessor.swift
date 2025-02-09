@@ -15,11 +15,15 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
-        document: Document,
+        document: Document?,
         options: MetadataProcessingOptions
     ) async {
         // Only apply this to Wikipedia.org URLs
         guard url.baseHostName == "wikipedia.org" else {
+            return
+        }
+
+        guard let document else {
             return
         }
 

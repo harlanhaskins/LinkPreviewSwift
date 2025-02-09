@@ -71,7 +71,7 @@ struct LinkPreviewTests {
             static func updateLinkPreview(
                 _ preview: inout LinkPreview,
                 for url: URL,
-                document: Document,
+                document: Document?,
                 options: MetadataProcessingOptions
             ) async {
                 var title = preview.title ?? ""

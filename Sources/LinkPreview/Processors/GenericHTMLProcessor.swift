@@ -60,7 +60,7 @@ public enum GenericHTMLProcessor: MetadataProcessor {
         try? document.select("title").text()
     }
 
-    private static func defaultFaviconIfExists(
+    static func defaultFaviconIfExists(
         for url: URL
     ) async -> URL? {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
@@ -86,27 +86,28 @@ public enum GenericHTMLProcessor: MetadataProcessor {
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
-        document: Document,
+        document: Document?,
         options: MetadataProcessingOptions
     ) async {
-        if preview.canonicalURL == nil {
-            preview.canonicalURL = findCanonicalURL(in: document)
-        }
 
-        if preview.title == nil {
-            preview.title = findTitle(in: document)
-        }
-
-        if preview.description == nil {
-            preview.description = findDescription(in: document)
-        }
-
-        if preview.faviconURL == nil {
+        if preview.faviconURL == nil, let document {
             preview.faviconURL = findFaviconURL(in: document)
         }
 
         if preview.faviconURL == nil && options.allowAdditionalRequests {
             preview.faviconURL = await defaultFaviconIfExists(for: url)
+        }
+
+        if preview.canonicalURL == nil, let document {
+            preview.canonicalURL = findCanonicalURL(in: document)
+        }
+
+        if preview.title == nil, let document {
+            preview.title = findTitle(in: document)
+        }
+
+        if preview.description == nil, let document {
+            preview.description = findDescription(in: document)
         }
     }
 }

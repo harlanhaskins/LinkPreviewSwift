@@ -38,6 +38,11 @@ public final class LinkPreviewProvider {
     public func load(html: String, url: URL) async throws -> LinkPreview {
         var preview = LinkPreview(url: url)
         let document = try SwiftSoup.parse(html, url.absoluteString)
+        await runProcessors(&preview, document: document, url: url)
+        return preview
+    }
+
+    func runProcessors(_ preview: inout LinkPreview, document: Document?, url: URL) async {
         for processor in registeredProcessors {
             await processor.updateLinkPreview(
                 &preview,
@@ -46,7 +51,6 @@ public final class LinkPreviewProvider {
                 options: options
             )
         }
-        return preview
     }
 
     /// Loads a link preview from the provided URL, optionally providing a set
@@ -60,8 +64,24 @@ public final class LinkPreviewProvider {
             httpRequest.setValue(value, forHTTPHeaderField: header)
         }
         httpRequest.setValue("facebookexternalhit/1.1 Facebot Twitterbot/1.0", forHTTPHeaderField: "User-Agent")
-        let data = try await httpRequest.load()
-        let html = String(decoding: data, as: UTF8.self)
-        return try await load(html: html, url: url)
+        var preview = LinkPreview(url: url)
+        var document: Document?
+        switch try await httpRequest.load() {
+        case let .html(data):
+            let html = String(decoding: data, as: UTF8.self)
+            document = try SwiftSoup.parse(html, url.absoluteString)
+        case let .fileURL(url, contentType):
+            preview.canonicalURL = url
+            if contentType.localizedCaseInsensitiveContains("image/") {
+                preview.imageURL = url
+            } else if contentType.localizedCaseInsensitiveContains("audio/") {
+                preview.audioURL = url
+            } else if contentType.localizedCaseInsensitiveContains("video/") {
+                preview.videoURL = url
+            }
+            preview.title = url.lastPathComponent
+        }
+        await runProcessors(&preview, document: document, url: url)
+        return preview
     }
 }

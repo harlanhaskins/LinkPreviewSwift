@@ -68,7 +68,7 @@ enum CustomProcessor: MetadataProcessor {
     static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
-        document: Document,
+        document: Document?,
         options: MetadataProcessingOptions
     ) async {
         let title = preview.title ?? ""
