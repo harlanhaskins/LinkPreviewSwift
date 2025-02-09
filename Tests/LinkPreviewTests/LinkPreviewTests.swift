@@ -66,6 +66,13 @@ struct LinkPreviewTests {
         #expect(preview.description == "Romance language")
     }
 
+    @Test func relativeImageURL() async throws {
+        let provider = LinkPreviewProvider()
+        let preview = try await provider.load(from: URL(string: "https://app.graphite.dev")!)
+        let imageURL = try #require(preview.imageURL)
+        #expect(imageURL.absoluteString.hasPrefix("https://app.graphite.dev"))
+    }
+
     @Test func customProcessor() async throws {
         enum CustomProcessor: MetadataProcessor {
             static func updateLinkPreview(

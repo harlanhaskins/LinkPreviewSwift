@@ -46,7 +46,7 @@ public struct LinkPreview: CustomDebugStringConvertible, Sendable {
     }
 
     public var hostFaviconURL: URL? {
-        URL(string: "favicon.ico", relativeTo: url.baseURL)
+        URL(string: "favicon.ico", relativeTo: url.rootURL)
     }
 
     public var canonicalURL: URL? {

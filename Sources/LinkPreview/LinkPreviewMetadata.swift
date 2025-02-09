@@ -81,7 +81,14 @@ extension UInt: LinkPreviewPropertyValue {
 
 extension URL: LinkPreviewPropertyValue {
     public init?(content: String, at url: URL) {
-        self.init(string: content, relativeTo: url.baseURL)
+        self.init(string: content, relativeTo: url.rootURL)
+    }
+    var rootURL: URL {
+        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: true) else {
+            return self
+        }
+        components.path = ""
+        return components.url ?? self
     }
     public var content: String {
         absoluteString
