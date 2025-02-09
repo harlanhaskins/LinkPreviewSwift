@@ -6,9 +6,6 @@
 //
 
 public import Foundation
-#if canImport(FoundationNetworking)
-public import FoundationNetworking
-#endif
 public import SwiftSoup
 
 public enum OpenGraphProcessor: MetadataProcessor {
@@ -16,7 +13,6 @@ public enum OpenGraphProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
         let metaTags = try? document.select("meta[property]")

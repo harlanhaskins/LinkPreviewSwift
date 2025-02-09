@@ -5,10 +5,8 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
+import AsyncHTTPClient
 public import Foundation
-#if canImport(FoundationNetworking)
-public import FoundationNetworking
-#endif
 public import SwiftSoup
 
 /// A Wikipedia-specific processor that hits the Wikipedia API in order to
@@ -18,7 +16,6 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
         // Only apply this to Wikipedia.org URLs
@@ -60,11 +57,14 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
         }
 
         do {
-            let (data, response) = try await session.data(from: url)
-            guard let httpResponse = response as? HTTPURLResponse, (200..<299).contains(httpResponse.statusCode) else {
+            let request = HTTPClientRequest(url: url.absoluteString)
+            let response = try await HTTPClient.shared.execute(request, timeout: .seconds(5))
+            guard response.status == .ok else {
                 return
             }
 
+            let buffer = try await response.body.collect(upTo: 1024 * 1024) // 1 MB
+            let data = Data(buffer.readableBytesView)
             let wikipediaResponse = try JSONSerialization.jsonObject(with: data)
             guard let dict = wikipediaResponse as? [String: Any],
                   let query = dict["query"] as? [String: Any],

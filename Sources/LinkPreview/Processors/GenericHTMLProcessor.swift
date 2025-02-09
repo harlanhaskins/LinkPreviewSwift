@@ -5,10 +5,8 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
+import AsyncHTTPClient
 public import Foundation
-#if canImport(FoundationNetworking)
-public import FoundationNetworking
-#endif
 public import SwiftSoup
 
 /// A metadata processor that tries to extract data from HTML outside of
@@ -63,8 +61,7 @@ public enum GenericHTMLProcessor: MetadataProcessor {
     }
 
     private static func defaultFaviconIfExists(
-        for url: URL,
-        in session: URLSession
+        for url: URL
     ) async -> URL? {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil
@@ -74,11 +71,9 @@ public enum GenericHTMLProcessor: MetadataProcessor {
             return nil
         }
         do {
-            let (_, response) = try await session.data(from: url)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return nil
-            }
-            guard (200..<299).contains(httpResponse.statusCode) else {
+            let request = HTTPClientRequest(url: url.absoluteString)
+            let response = try await HTTPClient.shared.execute(request, timeout: .seconds(1))
+            guard response.status == .ok else {
                 return nil
             }
         } catch {
@@ -92,7 +87,6 @@ public enum GenericHTMLProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
         if preview.canonicalURL == nil {
@@ -112,7 +106,7 @@ public enum GenericHTMLProcessor: MetadataProcessor {
         }
 
         if preview.faviconURL == nil && options.allowAdditionalRequests {
-            preview.faviconURL = await defaultFaviconIfExists(for: url, in: session)
+            preview.faviconURL = await defaultFaviconIfExists(for: url)
         }
     }
 }

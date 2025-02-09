@@ -20,6 +20,8 @@ public struct LinkPreviewPropertyName<Value: LinkPreviewPropertyValue>: Sendable
     public static var imageURL: LinkPreviewPropertyName<URL> { .init("image") }
     public static var videoURL: LinkPreviewPropertyName<URL> { .init("video") }
     public static var audioURL: LinkPreviewPropertyName<URL> { .init("audio") }
+    public static var siteName: LinkPreviewPropertyName<String> { .init("site_name") }
+
     public static var faviconURL: LinkPreviewPropertyName<URL> { .init("icon") }
 }
 

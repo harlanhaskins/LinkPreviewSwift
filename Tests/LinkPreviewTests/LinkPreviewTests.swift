@@ -6,9 +6,6 @@
 //
 
 import Foundation
-#if canImport(FoundationNetworking)
-public import FoundationNetworking
-#endif
 import LinkPreview
 import SwiftSoup
 import Testing
@@ -75,7 +72,6 @@ struct LinkPreviewTests {
                 _ preview: inout LinkPreview,
                 for url: URL,
                 document: Document,
-                in session: URLSession,
                 options: MetadataProcessingOptions
             ) async {
                 var title = preview.title ?? ""

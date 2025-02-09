@@ -1,12 +1,10 @@
 public import Foundation
-#if canImport(FoundationNetworking)
-public import FoundationNetworking
-#endif
+public import AsyncHTTPClient
 import SwiftSoup
 
 public enum LinkPreviewError: Error {
-    case invalidResponse(URLResponse)
-    case unsuccessfulHTTPStatus(Int, HTTPURLResponse)
+    case unableToHandleContentType(String, HTTPClientResponse)
+    case unsuccessfulHTTPStatus(Int, HTTPClientResponse)
     case unableToParseResponse(Error)
 }
 
@@ -84,6 +82,11 @@ public struct LinkPreview: CustomDebugStringConvertible, Sendable {
     public var audioURL: URL? {
         get { self[.audioURL] }
         set { self[.audioURL] = newValue }
+    }
+
+    public var siteName: String? {
+        get { self[.siteName] }
+        set { self[.siteName] = newValue }
     }
 
     public var debugDescription: String {

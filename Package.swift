@@ -12,11 +12,15 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
+        .package(url: "https://github.com/swift-server/async-http-client", from: "1.24.0")
     ],
     targets: [
         .target(
             name: "LinkPreview",
-            dependencies: ["SwiftSoup"],
+            dependencies: [
+                "SwiftSoup",
+                .product(name: "AsyncHTTPClient", package: "async-http-client")
+            ],
             swiftSettings: [
                 .enableUpcomingFeature("InternalImportsByDefault")
             ]

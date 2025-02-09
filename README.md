@@ -19,10 +19,11 @@ provider.options.allowAdditionalRequests
 // Load the preview
 let preview = try await provider.load(from: url)
 
-// If you want to customize the request before sending it, you can do that.
-var request = URLRequext(url: url)
-request.setValue("Bearer ...", forHTTPHeaderField: "Authorization")
-let preview = try await provider.load(with: request)
+// You can also provide custom headers to attach to the request
+
+let preview = try await provider.load(from: url, headers: [
+    "Authorization": "Bearer ..."
+])
 
 // You can also load directly from HTML
 let html = "<html><head><title>Title</title></head></html>"
@@ -68,7 +69,6 @@ enum CustomProcessor: MetadataProcessor {
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document,
-        in session: URLSession,
         options: MetadataProcessingOptions
     ) async {
         let title = preview.title ?? ""
