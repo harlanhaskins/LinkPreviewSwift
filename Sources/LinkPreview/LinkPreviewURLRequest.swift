@@ -26,7 +26,7 @@ struct LinkPreviewURLRequest {
     }
 
     func load() async throws -> Data {
-        let response = try await HTTPClient.shared.execute(request, timeout: .seconds(30))
+        let response = try await HTTPClient.shared.execute(request, timeout: .seconds(5))
         if response.status == .ok {
             let contentType = response.headers["Content-Type"]
             let isHTML = contentType.contains { $0.localizedCaseInsensitiveContains("text/html")
