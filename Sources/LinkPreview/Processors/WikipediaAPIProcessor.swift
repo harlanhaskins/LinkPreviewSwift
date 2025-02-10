@@ -67,7 +67,7 @@ public enum WikipediaAPIProcessor: MetadataProcessor {
                 return
             }
 
-            let buffer = try await response.body.collect(upTo: 1024 * 1024) // 1 MB
+            let buffer = try await response.body.collect(upTo: 10 * 1024 * 1024) // 10 MB
             let data = Data(buffer.readableBytesView)
             let wikipediaResponse = try JSONSerialization.jsonObject(with: data)
             guard let dict = wikipediaResponse as? [String: Any],

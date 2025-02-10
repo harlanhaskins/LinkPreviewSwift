@@ -38,7 +38,7 @@ struct LinkPreviewURLRequest {
             let isHTML = contentType.localizedCaseInsensitiveContains("text/html")
 
             if isHTML {
-                let body = try await response.body.collect(upTo: 1024 * 1024) // 1 MB
+                let body = try await response.body.collect(upTo: 10 * 1024 * 1024) // 10 MB
                 return .html(Data(body.readableBytesView))
             }
 
