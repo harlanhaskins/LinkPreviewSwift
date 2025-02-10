@@ -53,6 +53,15 @@ public final class LinkPreviewProvider {
         }
     }
 
+    private func bestUserAgent(for url: URL) -> String {
+        switch url.baseHostName {
+        case "spotify.com":
+            "Twitterbot/1.0"
+        default:
+            "facebookexternalhit/1.1 Facebot Twitterbot/1.0"
+        }
+    }
+
     /// Loads a link preview from the provided URL, optionally providing a set
     /// of custom headers.
     public func load(
@@ -63,7 +72,7 @@ public final class LinkPreviewProvider {
         for (header, value) in headers {
             httpRequest.setValue(value, forHTTPHeaderField: header)
         }
-        httpRequest.setValue("facebookexternalhit/1.1 Facebot Twitterbot/1.0", forHTTPHeaderField: "User-Agent")
+        httpRequest.setValue(bestUserAgent(for: url), forHTTPHeaderField: "User-Agent")
         var preview = LinkPreview(url: url)
         var document: Document?
         switch try await httpRequest.load() {
