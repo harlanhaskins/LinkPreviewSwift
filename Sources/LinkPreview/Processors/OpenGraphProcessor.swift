@@ -20,24 +20,37 @@ public enum OpenGraphProcessor: MetadataProcessor {
         }
         let metaTags = try? document.select("meta[property]")
         for metaTag in metaTags?.array() ?? [] {
-            guard var property = try? metaTag.attr("property") else {
+            guard let propertyTag = try? metaTag.attr("property") else {
                 continue
             }
-            if property.isEmpty { continue }
-            if property.hasPrefix("og:") {
-                property.removeFirst(3)
-                guard let content = try? metaTag.attr("content") else {
-                    continue
+            var components = propertyTag.split(separator: ":")
+            if components.count == 1 { continue }
+
+            var isOpenGraph = false
+            if components.first == "og" {
+                isOpenGraph = true
+                components.removeFirst()
+            }
+
+            guard let content = try? metaTag.attr("content") else {
+                continue
+            }
+            let name = String(components.removeFirst())
+            var property = preview.properties[name, default: .init(name: name)]
+
+            // Ignore redundant values, but treat OpenGraph data as authoritative.
+            if components.isEmpty {
+                if property.content == nil || isOpenGraph {
+                    property.content = content
                 }
-                if property.contains(":") {
-                    let pieces = property.split(separator: ":")
-                    let title = String(pieces[0])
-                    let metadataTitle = String(pieces[1])
-                    preview.properties[title, default: .init(name: title)].metadata[metadataTitle] = content
-                } else {
-                    preview.properties[property, default: .init(name: property)].content = content
+            } else {
+                let metadataName = String(components.removeFirst())
+                if property.metadata[metadataName] == nil  || isOpenGraph {
+                    property.metadata[metadataName] = content
                 }
             }
+
+            preview.properties[name] = property
         }
     }
 }

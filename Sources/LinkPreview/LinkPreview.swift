@@ -95,12 +95,10 @@ public struct LinkPreview: CustomDebugStringConvertible, Sendable {
         var numberPrinted = 0
         for key in propertyNames {
             let property = properties[key]!
-            guard let content = property.content else {
-                continue
-            }
             if numberPrinted != 0 {
                 description += "\n"
             }
+            let content = property.content ?? ""
             numberPrinted += 1
             description += "\(property.name): "
             if property.name == "description" && content.count > 200 {
