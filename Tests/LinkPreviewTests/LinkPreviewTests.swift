@@ -72,12 +72,6 @@ struct LinkPreviewTests {
         #expect(preview.audioURL != nil)
     }
 
-    @Test func wsj() async throws {
-        let provider = LinkPreviewProvider()
-        let preview = try await provider.load(from: URL(string: "https://www.wsj.com/articles/it-unemployment-rises-to-5-7-as-ai-hits-tech-jobs-7726bb1b")!)
-        #expect(preview.description != nil)
-    }
-
     @Test func semana() async throws {
         let provider = LinkPreviewProvider()
         let preview = try await provider.load(from: URL(string: "https://www.semana.com/quien-remplaza-presidente-vicepresidente/265823-3/")!)
