@@ -58,7 +58,7 @@ public final class LinkPreviewProvider {
         case "spotify.com":
             "Twitterbot/1.0"
         default:
-            "facebookexternalhit/1.1 Facebot Twitterbot/1.0"
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0"
         }
     }
 
@@ -73,6 +73,8 @@ public final class LinkPreviewProvider {
             httpRequest.setValue(value, forHTTPHeaderField: header)
         }
         httpRequest.setValue(bestUserAgent(for: url), forHTTPHeaderField: "User-Agent")
+        httpRequest.setValue("en-US,en;q=0.9", forHTTPHeaderField: "Accept-Language")
+
         var preview = LinkPreview(url: url)
         var document: Document?
         switch try await httpRequest.load() {

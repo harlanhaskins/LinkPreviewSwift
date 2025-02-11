@@ -66,6 +66,24 @@ struct LinkPreviewTests {
         #expect(preview.description == "Romance language")
     }
 
+    @Test func spotify() async throws {
+        let provider = LinkPreviewProvider()
+        let preview = try await provider.load(from: URL(string: "https://open.spotify.com/track/5TFD2bmFKGhoCRbX61nXY5")!)
+        #expect(preview.audioURL != nil)
+    }
+
+    @Test func wsj() async throws {
+        let provider = LinkPreviewProvider()
+        let preview = try await provider.load(from: URL(string: "https://www.wsj.com/articles/it-unemployment-rises-to-5-7-as-ai-hits-tech-jobs-7726bb1b")!)
+        #expect(preview.description != nil)
+    }
+
+    @Test func semana() async throws {
+        let provider = LinkPreviewProvider()
+        let preview = try await provider.load(from: URL(string: "https://www.semana.com/quien-remplaza-presidente-vicepresidente/265823-3/")!)
+        #expect(preview.description != nil)
+    }
+
     @Test func relativeImageURL() async throws {
         let provider = LinkPreviewProvider()
         let preview = try await provider.load(from: URL(string: "https://app.graphite.dev")!)
