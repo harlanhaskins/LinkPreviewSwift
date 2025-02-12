@@ -54,12 +54,22 @@ public final class LinkPreviewProvider {
     }
 
     private func bestUserAgent(for url: URL) -> String {
-        switch url.baseHostName {
-        case "spotify.com":
-            "Twitterbot/1.0"
-        default:
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0"
+        enum UserAgentPiece: String {
+            case facebook = "facebookexternalhit/1.1"
+            case facebot = "Facebot"
+            case twitterbot = "Twitterbot/1.0"
+            case safari = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4"
         }
+        let pieces: [UserAgentPiece] =
+            switch url.baseHostName {
+            case "spotify.com":
+                [.twitterbot]
+            case "apple.com":
+                [.twitterbot, .facebot, .facebook]
+            default:
+                [.twitterbot, .facebot, .facebook, .safari]
+            }
+        return pieces.map(\.rawValue).joined(separator: " ")
     }
 
     /// Loads a link preview from the provided URL, optionally providing a set

@@ -78,6 +78,12 @@ struct LinkPreviewTests {
         #expect(preview.description != nil)
     }
 
+    @Test func appleMaps() async throws {
+        let provider = LinkPreviewProvider()
+        let preview = try await provider.load(from: URL(string: "https://maps.apple.com/?address=2047%20Broadway,%20New%20York,%20NY%2010023,%20United%20States&auid=16126551866938176208&ll=40.777843,-73.982553&lsp=9902&q=Little%20Italy%20Pizza&t=r")!)
+        #expect(preview.description != nil)
+    }
+
     @Test func relativeImageURL() async throws {
         let provider = LinkPreviewProvider()
         let preview = try await provider.load(from: URL(string: "https://app.graphite.dev")!)
