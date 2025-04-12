@@ -10,15 +10,21 @@ import SwiftSoup
 
 /// Loads and extracts metadata from web URLs.
 public final class LinkPreviewProvider {
-    static let defaultProcessors: [any MetadataProcessor.Type] = [
+    private static let defaultProcessors: [any MetadataProcessor.Type] = [
         OpenGraphProcessor.self,
         GenericHTMLProcessor.self,
         WikipediaAPIProcessor.self
     ]
-    var registeredProcessors: [any MetadataProcessor.Type] = LinkPreviewProvider.defaultProcessors
+
+    private var registeredProcessors: [any MetadataProcessor.Type]
     public var options: MetadataProcessingOptions = .init()
 
     public init() {
+        self.registeredProcessors = LinkPreviewProvider.defaultProcessors
+    }
+
+    public init(processors: [any MetadataProcessor.Type]) {
+        self.registeredProcessors = processors
     }
 
     public func registerProcessor(_ type: any MetadataProcessor.Type) {
