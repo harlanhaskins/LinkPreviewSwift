@@ -43,13 +43,25 @@ public final class LinkPreviewProvider {
     }
 
     func runProcessors(_ preview: inout LinkPreview, document: Document?, url: URL) async {
-        for processor in registeredProcessors {
+        for processor in registeredProcessors where shouldRunProcessor(processor: processor, url: url) {
             await processor.updateLinkPreview(
                 &preview,
                 for: url,
                 document: document,
                 options: options
             )
+        }
+    }
+
+    func shouldRunProcessor(processor: any MetadataProcessor.Type, url: URL) -> Bool {
+        return switch processor.activationRule {
+        case .always: true
+
+        case .includesHostnames(let hostnames):
+            hostnames.contains(where: { $0 == url.baseHostName })
+
+        case .excludesHostnames(let hostnames):
+            !hostnames.contains(where: { $0 == url.baseHostName })
         }
     }
 

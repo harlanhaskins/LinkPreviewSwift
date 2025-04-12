@@ -14,6 +14,8 @@ public struct MetadataProcessingOptions: Sendable {
 }
 
 public protocol MetadataProcessor {
+    static var activationRule: MetadataProcessorActivationRule { get }
+
     static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
