@@ -10,7 +10,14 @@ public import SwiftSoup
 
 public struct MetadataProcessingOptions: Sendable {
     public var allowAdditionalRequests: Bool = true
-    public init() {}
+    public var websiteSpecificUserAgents: [WebsiteSpecificUserAgent]
+
+    public init() {
+        self.websiteSpecificUserAgents = [WebsiteSpecificUserAgent(
+            hostname: "spotify.com",
+            userAgent: "Twitterbot/1.0"
+        )]
+    }
 }
 
 public protocol MetadataProcessor {
