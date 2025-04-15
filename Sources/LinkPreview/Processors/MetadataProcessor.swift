@@ -10,7 +10,8 @@ public import SwiftSoup
 
 public struct MetadataProcessingOptions: Sendable {
     public var allowAdditionalRequests: Bool = true
-    public var websiteSpecificUserAgents: [WebsiteSpecificUserAgent]
+	public var websiteSpecificUserAgents: [WebsiteSpecificUserAgent]
+	public var requestTimeout: Int64 = 10
 
     public init() {
         self.websiteSpecificUserAgents = [WebsiteSpecificUserAgent(

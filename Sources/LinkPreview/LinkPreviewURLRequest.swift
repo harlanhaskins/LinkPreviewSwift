@@ -14,11 +14,13 @@ struct LinkPreviewURLRequest {
         case fileURL(URL, String)
     }
     var request: HTTPClientRequest
-    let url: URL
+	let url: URL
+	let requestTimeout: Int64
 
-    init(url: URL) {
+	init(url: URL, timeout requestTimeout: Int64 = 5) {
         self.url = url
         self.request = .init(url: url.absoluteString)
+		self.requestTimeout = requestTimeout
     }
 
     mutating func setValue(_ value: String, forHTTPHeaderField field: String) {
@@ -28,7 +30,7 @@ struct LinkPreviewURLRequest {
     }
 
     func load() async throws -> Output {
-        let response = try await HTTPClient.shared.execute(request, timeout: .seconds(5))
+		let response = try await HTTPClient.shared.execute(request, timeout: .seconds(self.requestTimeout))
         guard response.status == .ok else {
             throw LinkPreviewError.unsuccessfulHTTPStatus(Int(response.status.code), response)
         }

@@ -86,7 +86,7 @@ public final class LinkPreviewProvider {
         from url: URL,
         headers: [String: String] = [:]
     ) async throws -> LinkPreview {
-        var httpRequest = LinkPreviewURLRequest(url: url)
+		var httpRequest = LinkPreviewURLRequest(url: url, timeout: options.requestTimeout)
         for (header, value) in headers {
             httpRequest.setValue(value, forHTTPHeaderField: header)
         }
