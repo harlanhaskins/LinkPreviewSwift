@@ -6,7 +6,7 @@
 //
 import Foundation
 
-extension URL {
+public extension URL {
     var baseHostName: String? {
         host?.split(separator: ".").suffix(2).joined(separator: ".")
     }

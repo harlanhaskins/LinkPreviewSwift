@@ -6,8 +6,8 @@
 //
 
 import AsyncHTTPClient
-public import Foundation
-public import SwiftSoup
+import Foundation
+import SwiftSoup
 
 /// A Wikipedia-specific processor that hits the Wikipedia API in order to
 /// extract text from the articles.

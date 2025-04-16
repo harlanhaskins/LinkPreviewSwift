@@ -5,8 +5,8 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
-public import Foundation
-public import SwiftSoup
+import Foundation
+import SwiftSoup
 
 public enum OpenGraphProcessor: MetadataProcessor {
     public static var activationRule: MetadataProcessorActivationRule {

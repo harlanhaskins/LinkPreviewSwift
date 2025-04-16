@@ -5,7 +5,7 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
-public import Foundation
+import Foundation
 import SwiftSoup
 
 /// Loads and extracts metadata from web URLs.

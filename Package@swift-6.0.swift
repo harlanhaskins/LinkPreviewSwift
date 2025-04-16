@@ -20,9 +20,6 @@ let package = Package(
             dependencies: [
                 "SwiftSoup",
                 .product(name: "AsyncHTTPClient", package: "async-http-client")
-            ],
-            swiftSettings: [
-                .enableUpcomingFeature("InternalImportsByDefault")
             ]
         ),
         .executableTarget(name: "LinkPreviewCLI", dependencies: [

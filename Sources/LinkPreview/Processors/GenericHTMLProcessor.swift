@@ -6,8 +6,8 @@
 //
 
 import AsyncHTTPClient
-public import Foundation
-public import SwiftSoup
+import Foundation
+import SwiftSoup
 
 /// A metadata processor that tries to extract data from HTML outside of
 /// OpenGraph, either by looking for `<title>` tags, `<meta name="description">` tags, `<link rel="icon">` tags, etc.
