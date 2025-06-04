@@ -18,13 +18,15 @@ public enum OpenGraphProcessor: MetadataProcessor {
         guard let document else {
             return
         }
-        let metaTags = try? document.select("meta[property]")
+        let metaTags = try? document.select("meta")
         for metaTag in metaTags?.array() ?? [] {
-            guard let propertyTag = try? metaTag.attr("property") else {
+            let propertyTag = try? metaTag.attr("property")
+            let nameTag = try? metaTag.attr("name")
+            guard let propertyNameTag = propertyTag?.nonEmpty ?? nameTag else {
                 continue
             }
-            var components = propertyTag.split(separator: ":")
-            if components.count == 1 { continue }
+            var components = propertyNameTag.split(separator: ":")
+            if components.count < 2 { continue }
 
             var isOpenGraph = false
             if components.first == "og" {
@@ -52,5 +54,11 @@ public enum OpenGraphProcessor: MetadataProcessor {
 
             preview.properties[name] = property
         }
+    }
+}
+
+extension String {
+    var nonEmpty: String? {
+        isEmpty ? nil : self
     }
 }
