@@ -5,20 +5,26 @@
 //  Created by Harlan Haskins on 2/5/25.
 //
 
-public import Foundation
+import Foundation
 import SwiftSoup
 
 /// Loads and extracts metadata from web URLs.
 public final class LinkPreviewProvider {
-    static let defaultProcessors: [any MetadataProcessor.Type] = [
+    private static let defaultProcessors: [any MetadataProcessor.Type] = [
         OpenGraphProcessor.self,
         GenericHTMLProcessor.self,
         WikipediaAPIProcessor.self
     ]
-    var registeredProcessors: [any MetadataProcessor.Type] = LinkPreviewProvider.defaultProcessors
+
+    private var registeredProcessors: [any MetadataProcessor.Type]
     public var options: MetadataProcessingOptions = .init()
 
     public init() {
+        self.registeredProcessors = LinkPreviewProvider.defaultProcessors
+    }
+
+    public init(processors: [any MetadataProcessor.Type]) {
+        self.registeredProcessors = processors
     }
 
     public func registerProcessor(_ type: any MetadataProcessor.Type) {
@@ -43,7 +49,7 @@ public final class LinkPreviewProvider {
     }
 
     func runProcessors(_ preview: inout LinkPreview, document: Document?, url: URL) async {
-        for processor in registeredProcessors {
+        for processor in registeredProcessors where shouldRunProcessor(processor: processor, url: url) {
             await processor.updateLinkPreview(
                 &preview,
                 for: url,
@@ -53,11 +59,23 @@ public final class LinkPreviewProvider {
         }
     }
 
+    func shouldRunProcessor(processor: any MetadataProcessor.Type, url: URL) -> Bool {
+        return switch processor.activationRule {
+        case .always: true
+
+        case .includesHostnames(let hostnames):
+            hostnames.contains(where: { $0 == url.baseHostName })
+
+        case .excludesHostnames(let hostnames):
+            !hostnames.contains(where: { $0 == url.baseHostName })
+        }
+    }
+
     private func bestUserAgent(for url: URL) -> String {
-        switch url.baseHostName {
-        case "spotify.com":
-            "Twitterbot/1.0"
-        default:
+        let matchingHostName = self.options.websiteSpecificUserAgents.first(where: { $0.hostname == url.baseHostName })
+        return if let matchingHostName {
+            matchingHostName.userAgent
+        } else {
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0"
         }
     }
@@ -68,7 +86,7 @@ public final class LinkPreviewProvider {
         from url: URL,
         headers: [String: String] = [:]
     ) async throws -> LinkPreview {
-        var httpRequest = LinkPreviewURLRequest(url: url)
+		var httpRequest = LinkPreviewURLRequest(url: url, timeout: options.requestTimeout)
         for (header, value) in headers {
             httpRequest.setValue(value, forHTTPHeaderField: header)
         }

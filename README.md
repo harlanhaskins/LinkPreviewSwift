@@ -14,7 +14,7 @@ let provider = LinkPreviewProvider()
 
 // Turn off processing that requires making additional requests for more information,
 // instead choosing only to read data from the single page that's loaded.
-provider.options.allowAdditionalRequests
+provider.options.allowAdditionalRequests = false
 
 // Load the preview
 let preview = try await provider.load(from: url)

@@ -1,5 +1,5 @@
-public import Foundation
-public import AsyncHTTPClient
+import Foundation
+import AsyncHTTPClient
 import SwiftSoup
 
 public enum LinkPreviewError: Error {

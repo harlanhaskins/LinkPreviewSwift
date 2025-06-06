@@ -6,23 +6,22 @@
 //
 
 import AsyncHTTPClient
-public import Foundation
-public import SwiftSoup
+import Foundation
+import SwiftSoup
 
 /// A Wikipedia-specific processor that hits the Wikipedia API in order to
 /// extract text from the articles.
 public enum WikipediaAPIProcessor: MetadataProcessor {
+    public static var activationRule: MetadataProcessorActivationRule {
+        .includesHostnames(["wikipedia.org"])
+    }
+
     public static func updateLinkPreview(
         _ preview: inout LinkPreview,
         for url: URL,
         document: Document?,
         options: MetadataProcessingOptions
     ) async {
-        // Only apply this to Wikipedia.org URLs
-        guard url.baseHostName == "wikipedia.org" else {
-            return
-        }
-
         guard let document else {
             return
         }
